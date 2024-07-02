@@ -1,4 +1,6 @@
 import axios from 'axios';
+import { z } from "zod";
+import { CoreTool } from "ai";
 
 interface ProfessorData {
     id: string;
@@ -16,8 +18,59 @@ interface ProfessorData {
     lastName: string;
     isSaved: boolean;
 }
+async function fetchSchoolID(schoolName: string): Promise<string | null> {
+  const url = "https://www.ratemyprofessors.com/graphql";
+  const headers = {
+      "accept": "*/*",
+      "accept-language": "en-US,en;q=0.9",
+      "authorization": "Basic dGVzdDp0ZXN0", // Replace with your actual authorization if needed
+      "content-type": "application/json",
+      "sec-ch-ua": "\"Chromium\";v=\"124\", \"Google Chrome\";v=\"124\", \"Not-A.Brand\";v=\"99\"",
+      "sec-ch-ua-mobile": "?0",
+      "sec-ch-ua-platform": "\"macOS\"",
+      "sec-fetch-dest": "empty",
+      "sec-fetch-mode": "cors",
+      "sec-fetch-site": "same-origin",
+      "cookie": "ccpa-notice-viewed-02=true",
+      "Referer": `https://www.ratemyprofessors.com/search/schools?q=${encodeURIComponent(schoolName)}`,
+      "Referrer-Policy": "strict-origin-when-cross-origin"
+  };
 
-async function fetchProfessorData(schoolName: string, professorName: string): Promise<ProfessorData[] | null> {
+  const body = {
+      query: `
+          query SchoolSearchQuery($query: String!) {
+              search: newSearch {
+                  schools(query: $query, first: 1) {
+                      edges {
+                          node {
+                              id
+                              name
+                          }
+                      }
+                  }
+              }
+          }
+      `,
+      variables: {
+          query: schoolName
+      }
+  };
+
+  try {
+      const response = await axios.post(url, body, { headers });
+      const data = response.data;
+
+      if (data.data && data.data.search && data.data.search.schools && data.data.search.schools.edges.length > 0) {
+          return data.data.search.schools.edges[0].node.id;
+      } else {
+          return null;
+      }
+  } catch (error) {
+      console.error("Error fetching school ID:", error);
+      return null;
+  }
+}
+async function fetchProfessorDataog(schoolName: string, professorName: string): Promise<ProfessorData[] | null> {
     const url = "https://www.ratemyprofessors.com/graphql";
     const headers = {
         "accept": "*/*",
@@ -145,7 +198,7 @@ async function main() {
     const schoolName = "University of Illinois at Urbana-Champaign";
     const professorName = "Wade Fagen-Ulmschneider";
 
-    const professors = await fetchProfessorData(schoolName, professorName);
+    const professors = await fetchProfessorDataog(schoolName, professorName);
 
     if (professors) {
         const names = professorName.split(' ');
@@ -183,5 +236,27 @@ async function main() {
         console.log("No professors found.");
     }
 }
-
 main();
+export let rmpTools: Record<string, CoreTool> = {
+  search_school: {
+    description: "Search for a specific school",
+    parameters: z.object({
+      query: z.string().describe("the school to search for"),
+    }),
+    execute: async ({ query }) => {
+      console.log("[TOOL] search_school: ", query);
+      return await fetchSchoolID(query);
+    },
+  },
+  search_professor: {
+    description: "Get comments for a post",
+    parameters: z.object({
+      schoolid: z.string().describe("the school id"),
+      name: z.string().describe("the name of the prof"),
+    }),
+    execute: async ({ schoolid, name }) => {
+      console.log("[TOOL] get_comments_for_post: ", schoolid, name);
+      return await fetchProfessorDataog(schoolid, name);
+    },
+  },
+};
