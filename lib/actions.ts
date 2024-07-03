@@ -8,7 +8,8 @@ async function go() {
   const messages: CoreMessage[] = [
     {
       role: "system",
-      content: "You are a helpful assistant. You should always use the reddit tools to answer questions about universities. Choose subreddits with more members when there are multiple. Consult the comments where appropriate",
+      content:
+        "You are a helpful assistant. You should always use the reddit tools to answer questions about universities. Choose subreddits with more members when there are multiple. Consult the comments where appropriate",
     },
     {
       role: "user",

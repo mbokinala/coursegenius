@@ -59,21 +59,21 @@ async function executeRedditRequest(url: string, method = "GET") {
 async function searchSubreddit(subredditName: string) {
   let response = await executeRedditRequest(
     `https://oauth.reddit.com/api/search_reddit_names?query=${subredditName}`,
-    "POST"
+    "POST",
   );
   return response;
 }
 
 async function getMe() {
   let response = await executeRedditRequest(
-    "https://oauth.reddit.com/api/v1/me"
+    "https://oauth.reddit.com/api/v1/me",
   );
   return response;
 }
 
 async function getAboutSubreddit(subredditName: string) {
   let response = await executeRedditRequest(
-    `https://oauth.reddit.com/r/${subredditName}/about`
+    `https://oauth.reddit.com/r/${subredditName}/about`,
   );
   return response;
 }
@@ -81,10 +81,10 @@ async function getAboutSubreddit(subredditName: string) {
 async function searchPostsFromSubreddit(
   subredditName: string,
   query: string,
-  sort = "top"
+  sort = "top",
 ) {
   let response = await executeRedditRequest(
-    `https://oauth.reddit.com/r/${subredditName}/search?q=${query}&restrict_sr=on&sort=${sort}&t=all`
+    `https://oauth.reddit.com/r/${subredditName}/search?q=${query}&restrict_sr=on&sort=${sort}&t=all`,
   );
 
   let posts = response.data.children.map(async (post: any) => {
@@ -103,7 +103,7 @@ async function getCommentsForPost(subreddit: string, postId: string) {
   }
   let response = await executeRedditRequest(
     `https://oauth.reddit.com/r/${subreddit}/comments/${postId}`,
-    "GET"
+    "GET",
   );
 
   type Comment = {
@@ -159,7 +159,7 @@ export let redditTools: Record<string, CoreTool> = {
     }),
     execute: async ({ subredditName, query }) => {
       console.log(
-        `[TOOL] searchPosts - searching r/${subredditName} for ${query}`
+        `[TOOL] searchPosts - searching r/${subredditName} for ${query}`,
       );
       let result = await searchPostsFromSubreddit(subredditName, query);
       console.log("[TOOL] got", result.length, "posts");
