@@ -1,6 +1,7 @@
 import { openai } from "@ai-sdk/openai";
 import { CoreMessage, generateText } from "ai";
 import { redditTools } from "./reddit";
+import {rmpTools} from "./ratemyprof";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -8,18 +9,18 @@ async function go() {
   const messages: CoreMessage[] = [
     {
       role: "system",
-      content: "You are a helpful assistant. You should always use the reddit tools to answer questions about universities. Choose subreddits with more members when there are multiple. Consult the comments where appropriate",
+      content: "You are a helpful assistant. Use the rate my professor tool to get information about a professor.",
     },
     {
       role: "user",
-      content: "get me info about mccutcheon hall at purdue",
+      content: "Get me information about Ben Wiles who teaches at Purdue University - West Lafayette.",
     },
   ];
 
   const result = await generateText({
     model: openai("gpt-4o"),
     messages,
-    tools: redditTools,
+    tools: rmpTools,
     maxToolRoundtrips: 15,
   });
 

@@ -87,13 +87,13 @@ async function searchPostsFromSubreddit(
     `https://oauth.reddit.com/r/${subredditName}/search?q=${query}&restrict_sr=on&sort=${sort}&t=all`
   );
 
-  let posts = response.data.children.map(async (post: any) => {
+  let posts = await Promise.all(response.data.children.map(async (post: any) => {
     return {
       title: post.data.title,
       selftext: post.data.selftext,
       id: post.data.id,
     };
-  });
+  }));
   return posts;
 }
 

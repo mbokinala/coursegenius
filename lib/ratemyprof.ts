@@ -195,8 +195,8 @@ async function fetchProfessorDataog(schoolName: string, professorName: string): 
 }
 
 async function main() {
-    const schoolName = "University of Illinois at Urbana-Champaign";
-    const professorName = "Wade Fagen-Ulmschneider";
+    const schoolName = "Purdue University - West Lafayette";
+    const professorName = "Ben Wiles";
 
     const professors = await fetchProfessorDataog(schoolName, professorName);
 
@@ -238,7 +238,7 @@ async function main() {
 }
 main();
 export let rmpTools: Record<string, CoreTool> = {
-  search_school: {
+  /*search_school: {
     description: "Search for a specific school",
     parameters: z.object({
       query: z.string().describe("the school to search for"),
@@ -247,7 +247,7 @@ export let rmpTools: Record<string, CoreTool> = {
       console.log("[TOOL] search_school: ", query);
       return await fetchSchoolID(query);
     },
-  },
+  },*/
   search_professor: {
     description: "Get comments for a post",
     parameters: z.object({
