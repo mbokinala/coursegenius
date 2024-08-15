@@ -2,6 +2,7 @@ import axios from 'axios';
 import { z } from "zod";
 import { CoreTool } from "ai";
 
+
 interface ProfessorData {
     id: string;
     legacyId: number;
@@ -18,59 +19,27 @@ interface ProfessorData {
     lastName: string;
     isSaved: boolean;
 }
-async function fetchSchoolID(schoolName: string): Promise<string | null> {
-  const url = "https://www.ratemyprofessors.com/graphql";
-  const headers = {
-      "accept": "*/*",
-      "accept-language": "en-US,en;q=0.9",
-      "authorization": "Basic dGVzdDp0ZXN0", // Replace with your actual authorization if needed
-      "content-type": "application/json",
-      "sec-ch-ua": "\"Chromium\";v=\"124\", \"Google Chrome\";v=\"124\", \"Not-A.Brand\";v=\"99\"",
-      "sec-ch-ua-mobile": "?0",
-      "sec-ch-ua-platform": "\"macOS\"",
-      "sec-fetch-dest": "empty",
-      "sec-fetch-mode": "cors",
-      "sec-fetch-site": "same-origin",
-      "cookie": "ccpa-notice-viewed-02=true",
-      "Referer": `https://www.ratemyprofessors.com/search/schools?q=${encodeURIComponent(schoolName)}`,
-      "Referrer-Policy": "strict-origin-when-cross-origin"
-  };
 
-  const body = {
-      query: `
-          query SchoolSearchQuery($query: String!) {
-              search: newSearch {
-                  schools(query: $query, first: 1) {
-                      edges {
-                          node {
-                              id
-                              name
-                          }
-                      }
-                  }
-              }
-          }
-      `,
-      variables: {
-          query: schoolName
-      }
-  };
+import axios from 'axios';
 
-  try {
-      const response = await axios.post(url, body, { headers });
-      const data = response.data;
-
-      if (data.data && data.data.search && data.data.search.schools && data.data.search.schools.edges.length > 0) {
-          return data.data.search.schools.edges[0].node.id;
-      } else {
-          return null;
-      }
-  } catch (error) {
-      console.error("Error fetching school ID:", error);
-      return null;
-  }
+interface ProfessorData {
+    id: string;
+    legacyId: number;
+    avgRating: number;
+    numRatings: number;
+    wouldTakeAgainPercent: number;
+    avgDifficulty: number;
+    department: string;
+    school: {
+        name: string;
+        id: string;
+    };
+    firstName: string;
+    lastName: string;
+    isSaved: boolean;
 }
-async function fetchProfessorDataog(schoolName: string, professorName: string): Promise<ProfessorData[] | null> {
+
+async function fetchProfessorData(schoolName: string, professorName: string): Promise<ProfessorData[] | null> {
     const url = "https://www.ratemyprofessors.com/graphql";
     const headers = {
         "accept": "*/*",
@@ -195,20 +164,21 @@ async function fetchProfessorDataog(schoolName: string, professorName: string): 
 }
 
 async function main() {
-    const schoolName = "Purdue University - West Lafayette";
-    const professorName = "Ben Wiles";
+    const schoolName = "University of Illinois at Urbana-Champaign";
+    const professorName = "Julie Deeke";  // Can be either "Julie" or "Julie Deeke"
 
-    const professors = await fetchProfessorDataog(schoolName, professorName);
+    const professors = await fetchProfessorData(schoolName, professorName);
 
     if (professors) {
-        const names = professorName.split(' ');
-        const firstName = names[0].toLowerCase();
-        const lastName = names.length > 1 ? names[1].toLowerCase() : null;
-        const exactMatch = professors.find(prof => 
-            prof.firstName.toLowerCase() === firstName &&
+        const nameParts = professorName.split(' ');
+        const firstName = nameParts[0].toLowerCase();
+        const lastName = nameParts.length > 1 ? nameParts[1].toLowerCase() : null;
+
+        const exactMatch = professors.find(prof =>
+            prof.firstName.toLowerCase() === firstName && 
             (lastName === null || prof.lastName.toLowerCase() === lastName)
         );
-        
+
         if (exactMatch) {
             console.log(`Exact Match Found:`);
             console.log(`Professor: ${exactMatch.firstName} ${exactMatch.lastName}`);
@@ -236,6 +206,7 @@ async function main() {
         console.log("No professors found.");
     }
 }
+
 main();
 export let rmpTools: Record<string, CoreTool> = {
   /*search_school: {
@@ -256,7 +227,7 @@ export let rmpTools: Record<string, CoreTool> = {
     }),
     execute: async ({ schoolid, name }) => {
       console.log("[TOOL] get_comments_for_post: ", schoolid, name);
-      return await fetchProfessorDataog(schoolid, name);
+      return await fetchProfessorData(schoolid, name);
     },
   },
 };

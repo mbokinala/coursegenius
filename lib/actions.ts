@@ -9,18 +9,18 @@ async function go() {
   const messages: CoreMessage[] = [
     {
       role: "system",
-      content: "You are a helpful assistant. Use the rate my professor tool to get information about a professor.",
+      content: "You are a helpful assistant. Search a unversity's subreddit using only reddit tools for information about a professor.",
     },
     {
       role: "user",
-      content: "Get me information about Ben Wiles who teaches at Purdue University - West Lafayette.",
+      content: "Get me information about Julie Deeke who teaches at  University of Illinois at Urbana - Champaign. What is the student sentiment about her?",
     },
   ];
 
   const result = await generateText({
     model: openai("gpt-4o"),
     messages,
-    tools: rmpTools,
+    tools: redditTools,
     maxToolRoundtrips: 15,
   });
 
