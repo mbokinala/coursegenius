@@ -177,7 +177,12 @@ export let redditTools: Record<string, CoreTool> = {
       id: z.string().describe("the id of the post"),
     }),
     execute: async ({ subreddit, postId }) => {
-      console.log("[TOOL] get_comments_for_post: ", subreddit, postId);
+      console.log(
+        "[TOOL] get_comments_for_post - subreddit:",
+        subreddit,
+        "postId:",
+        postId
+      );
       return await getCommentsForPost(subreddit, postId);
     },
   },
@@ -193,13 +198,12 @@ export let redditTools: Record<string, CoreTool> = {
   },
 };
 
-
 /**
- * To test auth functionality, uncomment the code below and run 
- * `npx tsx src/lib/reddit.ts`
- * 
+ * To test auth functionality, uncomment the code below and run
+ * `npx tsx lib/reddit.ts`
+ *
  * If everything is working properly, the user's information should be logged to the console.
- * 
+ *
  * Recomment it before importing the reddit tools elsewhere.
  */
 
