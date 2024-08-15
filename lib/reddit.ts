@@ -1,4 +1,4 @@
-import { CoreTool } from "ai";
+import { CoreTool, tool } from "ai";
 import axios from "axios";
 import { z } from "zod";
 const qs = require("qs");
@@ -171,7 +171,7 @@ export let redditTools: Record<string, CoreTool> = {
       return result;
     },
   },
-  get_comments_for_post: {
+  get_comments_for_post: tool({
     description: "Get comments for a post",
     parameters: z.object({
       subreddit: z.string().describe("the subreddit of the post"),
@@ -186,7 +186,7 @@ export let redditTools: Record<string, CoreTool> = {
       );
       return await getCommentsForPost(subreddit, postId);
     },
-  },
+  }),
   get_about_subreddit: {
     description: "Get information about a subreddit",
     parameters: z.object({

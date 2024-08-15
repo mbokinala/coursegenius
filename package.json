@@ -9,11 +9,11 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@ai-sdk/openai": "^0.0.34",
+    "@ai-sdk/openai": "^0.0.46",
     "@mtucourses/rate-my-professors": "^2.2.1",
     "@types/axios": "^0.14.0",
     "@types/qs": "^6.9.15",
-    "ai": "^3.2.15",
+    "ai": "^3.3.7",
     "axios": "^1.7.2",
     "dotenv": "^16.4.5",
     "next": "14.2.4",
