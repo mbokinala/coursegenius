@@ -167,6 +167,7 @@ export let redditTools: Record<string, CoreTool> = {
       );
       let result = await searchPostsFromSubreddit(subredditName, query);
       console.log("[TOOL] got", result.length, "posts");
+      console.log(result);
       return result;
     },
   },
