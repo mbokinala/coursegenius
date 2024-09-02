@@ -1,9 +1,10 @@
+'use client'
 import { useChat } from 'ai/react';
 import { useEffect, useRef } from 'react';
 
-const chat = () => {
+const Chat = () => {
     const { messages, handleInputChange, handleSubmit } = useChat({
-      api: 'gpt-4o',
+      keepLastMessageOnError: true,
     });
     const chatCointainer = useRef<HTMLDivElement>(null);
     const scroll = () => {
@@ -37,4 +38,4 @@ const chat = () => {
     </div>
   );
 }
-export default chat;
+export default Chat;

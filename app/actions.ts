@@ -1,23 +1,28 @@
+"use server";
+
 import { OpenAI, openai } from "@ai-sdk/openai";
 import { CoreMessage, generateText } from "ai";
-import { OpenAIStream, StreamingTextResponse } from "ai";
+import { convertToCoreMessages, streamText } from "ai";
 import { redditTools } from "./reddit";
 import { rmpTools } from "./ratemyprof";
 import dotenv from "dotenv";
-"use server";
+import {z} from 'zod'; 
 //import OpenAI from "openai";
 //const openai = new OpenAI();
 
-/*dotenv.config();
+dotenv.config();
 
 export const runtime = 'edge';  
-export async function POST(req: Request, res: Response) {
+export async function POST(req: Request) {
   const {messages} = await req.json();
   console.log( 'messages:', messages );
-  const response = await openai.chat.completions.create( {
-
-  })
-}*/
+  const result = await streamText({
+    model: openai("gpt-4o"),
+    messages,
+    tools: redditTools,
+  });
+  return result.toAIStreamResponse();
+}
 async function go() {
   const messages: CoreMessage[] = [
     {
