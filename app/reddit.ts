@@ -177,17 +177,17 @@ export let redditTools: Record<string, CoreTool> = {
       subreddit: z.string().describe("the subreddit of the post"),
       id: z.string().describe("the id of the post"),
     }),
-    execute: async ({ subreddit, postId }) => {
+    execute: async ({ subreddit, id }) => {
       console.log(
         "[TOOL] get_comments_for_post - subreddit:",
         subreddit,
         "postId:",
-        postId
+        id
       );
-      return await getCommentsForPost(subreddit, postId);
+      return await getCommentsForPost(subreddit, id);
     },
   }),
-  get_about_subreddit: {
+  get_about_subreddit: tool({
     description: "Get information about a subreddit",
     parameters: z.object({
       subreddit: z.string().describe("the subreddit to get information about"),
@@ -196,7 +196,7 @@ export let redditTools: Record<string, CoreTool> = {
       console.log("[TOOL] get_about_subreddit: ", subreddit);
       return await getAboutSubreddit(subreddit);
     },
-  },
+  }),
 };
 
 /**
