@@ -14,16 +14,19 @@ dotenv.config();
 
 export const runtime = 'edge';  
 export async function POST(req: Request) {
-  const {messages} = await req.json();
+  const {messages, customKey} = await req.json();
   console.log( 'messages:', messages );
   const result = await streamText({
+    experimental_toolCallStreaming: true,
+
     model: openai("gpt-4o"),
     messages,
     tools: redditTools,
+    maxToolRoundtrips: 15,
   });
   return result.toAIStreamResponse();
 }
-async function go() {
+/*async function go() {
   const messages: CoreMessage[] = [
     {
       role: "system",
@@ -36,8 +39,8 @@ async function go() {
       content:
         "Example",
     },
-  ];
-  while(true) {
+  ];*/
+  /*while(true) {
     const result = await generateText({
       model: openai("gpt-4o"),
       messages,
@@ -77,4 +80,4 @@ async function getUserInput(prompt: string) {
   });
 }
 
-go();
+go();*/

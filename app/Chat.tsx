@@ -2,8 +2,8 @@
 import { useChat } from 'ai/react';
 import { useEffect, useRef } from 'react';
 
-const Chat = () => {
-    const { messages, handleInputChange, handleSubmit } = useChat({
+export default function Chat(){
+    const { messages,input,  handleInputChange, handleSubmit } = useChat({
       keepLastMessageOnError: true,
     });
     const chatCointainer = useRef<HTMLDivElement>(null);
@@ -25,6 +25,18 @@ const Chat = () => {
           </div>
         </div>
         ))}
+        <form
+          onSubmit={event => {
+            handleSubmit(event, {
+              body: {
+                customKey: "You are a helpful assistant. Search a unversity's subreddit using only reddit tools for information about a class and its professor. \
+                make sure to search by class' full title alone in case theres no results. As a rule of thumb, summarize the information you find about the class or prof."
+              },
+            });
+          }}
+        >
+          <input value={input} onChange={handleInputChange} />
+        </form>
       </div>
     );
   };
@@ -38,4 +50,3 @@ const Chat = () => {
     </div>
   );
 }
-export default Chat;

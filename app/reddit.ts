@@ -197,6 +197,7 @@ export let redditTools: Record<string, CoreTool> = {
       return await getAboutSubreddit(subreddit);
     },
   }),
+
 };
 
 /**
