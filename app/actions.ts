@@ -17,7 +17,7 @@ export async function POST(req: Request) {
   const {messages, customKey} = await req.json();
   console.log( 'messages:', messages );
   const result = await streamText({
-
+    experimental_toolCallStreaming: true,
     model: openai("gpt-4o"),
     messages: [
       {
@@ -29,7 +29,7 @@ export async function POST(req: Request) {
     ],
     tools: redditTools,
   });
-  return result.toAIStreamResponse();
+  return result.toDataStreamResponse();
 }
 /*async function go() {
   const messages: CoreMessage[] = [
