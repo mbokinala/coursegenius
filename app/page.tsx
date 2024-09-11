@@ -1,6 +1,17 @@
 'use client'
 import { useChat } from 'ai/react';
-
+import { Textarea } from "@/components/ui/textarea"
+import * as React from "react"
+import { MoonIcon, SunIcon } from "@radix-ui/react-icons"
+import { useTheme } from "next-themes"
+ 
+import { Button } from "@/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 export default function Chat(){
   const { messages,input,  handleInputChange, handleSubmit } = useChat({
@@ -14,14 +25,18 @@ export default function Chat(){
             {message.content}
           </div>
         ))}
-
         <form onSubmit={handleSubmit}>
           <input name="prompt" value={input} onChange={handleInputChange} />
           <button type="submit">Submit</button>
         </form>
+        
       </>
     );
 };
+/*<form onSubmit={handleSubmit}>
+          <input name="prompt" value={input} onChange={handleInputChange} />
+          <button type="submit">Submit</button>
+        </form>*/
     //const chatCointainer = useRef<HTMLDivElement>(null);
     /*const scroll = () => {
       const { offsetHeight, scrollHeight, scrollTop} = chatCointainer.current as HTMLDivElement
